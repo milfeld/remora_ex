@@ -1,0 +1,59 @@
+#!/bin/bash
+#                                        Kent Milfeld 2017 11 14
+# TACC stampede
+#SBATCH -J pio_remora     # Job name
+#SBATCH -o pio_remora.o%j # Name of stdout output file (%j expands to jobId)
+#SBATCH -p skx-dev        # Queue name
+#SBATCH -N 1           # Total number of mpi tasks requested
+#SBATCH -n 16          # Total number of mpi tasks requested
+#SBATCH -t 00:15:00    # Run time (hh:mm:ss) - 5 minutes
+####### -A TACC-PCSE   # <-- Allocation name to charge job against
+
+# CHPC lengau
+#PBS -l select=1:ncpus=24:mpiprocs=24:nodetype=haswell_reg
+#PBS -P RCHPC
+#PBS -q normal
+#PBS -l walltime=0:10:00
+
+my_hostname=$(hostname -A)
+if [[ ${my_hostname[@]} =~ lengau ]]; then
+   HOST=lengua
+   FILE_SYSTEM=$HOME/lustre
+   module unload gcc/6.1.0;
+   module load chpc/openmpi/2.0.0/gcc-6.1.0_java-1.8.0_73
+   MPI_RUN=mpirun
+   AFFINITY_WRAP=""
+fi
+if [[ ${my_hostname[@]} =~ stampede2 ]]; then
+   HOST=stampede2
+   FILE_SYSTEM=$SCRATCH
+   MPI_RUN=ibrun
+   module load my_remora
+  #AFFINITY_WRAP=tacc_affinity
+   AFFINITY_WRAP=""
+fi
+
+export REMORA_PERIOD=1
+date
+   APP_DIR=`pwd`
+ # APP_DIR=$SCRATCH/REMORA_IO
+ # mkdir -p $APP_DIR
+ # cp pio   $APP_DIR
+ # cd       $APP_DIR
+
+   rm    -rf $FILE_SYSTEM/pio_test/*    #remove any old directories
+
+   stripe=4; tasks=2                    #use 4-wide stripe, and 2 MPI Tasks
+
+   export    LUSTRE_DIR=$FILE_SYSTEM/pio_test/$stripe
+   mkdir -p $LUSTRE_DIR 
+
+                                        #Set stripe on file system
+                  # Size     stripe Count       Directory
+   lfs setstripe -S 1048576  -c $stripe     $LUSTRE_DIR/$stripe
+
+#       echo $MPI_RUN -np $tasks $AFFINITY_WRAP $APP_DIR/pio
+#            $MPI_RUN -np $tasks $AFFINITY_WRAP $APP_DIR/pio
+ echo remora $MPI_RUN -np $tasks $AFFINITY_WRAP $APP_DIR/pio
+      remora $MPI_RUN -np $tasks $AFFINITY_WRAP $APP_DIR/pio
+

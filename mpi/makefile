@@ -1,0 +1,18 @@
+#                         MPI  Kent Milfeld 2019 04 24
+MPI_F90 = mpif90
+
+ifneq ($(findstring stampede2,$(shell hostname -A)),)
+        MPI_F90=mpif90
+        FFLAGS=-O3 $(TACC_VEC_FLAGS) -mcmodel=large
+endif
+
+
+matmult: matmult.o 
+	$(MPI_F90) matmult.o -o matmult 
+
+matmult.o: matmult.f90
+	$(MPI_F90) $(FFLAGS) -c matmult.f90  -o matmult.o
+
+
+clean:
+	rm -rf *.o core matmult

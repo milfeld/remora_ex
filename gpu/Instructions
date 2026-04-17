@@ -1,0 +1,51 @@
+                                             Kent Milfeld 2026 04 17
+GPU Monitoring Exercise:
+
+
+===============================================================================
+
+
+0.) MAKE SURE YOU ARE IN AN INTERACTIVE IDEV SESSION and on a gpu node 
+    (gh or gh-dev on vista)
+
+    Start a session:
+
+       idev            #wait for prompt, accept reservation for gpu
+
+                       # If the reservation doesn't provide a gpu partition
+       idev -p gh-dev  # then try to get a gpu node, and  don't accept reservation.
+
+       cd remora/gpu
+
+       module load remora
+       export REMORA_PERIOD=1
+
+1.) Build blas-type code 
+
+     make 
+
+2.) Make sure the program runs:
+
+     ./bla
+
+3.) run bla with a period of 1 second, and view/open the remora-*/GPU/gpu*html file
+    on your laptop.
+
+       remora ./bla
+
+
+        cat remora_*[0-9][0-9]/gpu/gpu_*.html
+              #copy and paste into file on your laptop. (call it gpu.html)
+
+       ON LOCAL machine:
+
+         ON MACS:       open gpu.html
+         ON LINUX:   firefox gpu.html
+         ON Windows: <click> gpu.html
+
+    a.) What executions unit are being used (fp64, fp32, ...)? ______ ______ ____
+    b.) Is memory usage ever being maxed out?
+    c.) The four kernel performance measurements are (in order):
+        saxpy, daxpy, daspy_sqrt, and dsincos.  Which one uses the
+        most energy?  ______________
+

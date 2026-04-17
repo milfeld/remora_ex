@@ -1,0 +1,88 @@
+
+IO Exercise:
+
+***** For security reasons at permissions for IO collection
+      have been turned off.
+
+The pio.c code performs parallel IO to a single file.
+It mimics the creation of a checkpoint/restart file
+and subsequently updates it 29 more time.
+
+    You will build the pio executable.
+    You run it with remora to acquire details about the execution.
+
+    You can run it without remora, to make sure all is working.
+*******************************************************************************
+
+1.)
+    Start a session:
+
+       idev            #wait for prompt, accept reservation and all defaults
+                       #You will automatically have an MPI environment
+       cd remora_ex/io
+
+2.) Note:  look at pio.c; it uses MPI-IO to write to files and is complicated.
+           All you need to know it that it writes to files in scratch.
+           (BTW, it also uses IOPS through the File System that pio executes in.)
+
+3.) Build pio
+
+       make            # makes pio
+
+
+4.)
+    There is a job script (named "job"), which you could submit from the login 
+    to run the pio executable.  It sets up the file system for 4-way striping.
+
+    Here we will use it as an executable script and run it interactively 
+    (just the unix commands are executed, nice!).
+    You might look at the job script to see how it is setting up to run 
+    (in batch or interactively).
+
+       ./job
+
+5.) The script cd's to $SCRATCH/pio_test/4 where it is executed, and therefore
+    the remora_# directory exists there.  Copy it back to your present directory
+    after executing the script.
+
+       cp -rp $SCRATCH/pio_test/4/remora* .
+
+
+*******************************************************************************
+6.)
+From the Remora Summary determine the following:
+
+a.) Sampling Period:                 ___________ seconds
+b.) Total Time:                      ___________ seconds
+c.) Name of Lustre FILE System uses: ___________ (Home/Scratch/Work ?)
+c.) Was the IO mainly READ or WRITE: ____________READ|WRITE
+d.) Max and Min Bandwidth:      MAX: _____   MIN:______(MB/sec)
+e.) Results Directory:               ____________
+
+
+7.) Tar up the IO information and download to your machine:
+
+    tar -cvf IO.tar remora_<jobid>/IO/*.html
+                             ^
+                             substitute the job number here
+
+    Untar the file on you machine and cd down to the IO directory:
+    tar -xvf IO.tar
+    cd remora_*/IO
+
+    OR, BETTER YET, just cat the html file, paste the content
+    into a file with an io.html file on your local machine and
+    open it with a browser:  "open io.html" should work.
+
+         ON MACS:       open lustre.html io.html
+         ON LINUX:   firefox lustre.html io.html
+         ON Windows: <click> lustre.html io.html
+
+
+
+   a.) From LNET Stats (lnet_<node>.html) total send length   _____ (B=GB)
+
+   b.) From Lustre Load Read/Write (lustre_<node>.html) 
+       These are Bytes read/written in the period highest=    ______ (GB)
+       What is the highest bandwidth (highest/2seconds)       ______ (GB/s)
+   c.) From Lustre Load Operations (lustre_<node>.html) ~avg  ______ (IOPS)

@@ -1,0 +1,57 @@
+                                             Kent Milfeld 2026 04 17
+
+3.) run memoryf with a period of 1 second
+
+       remora ./memoryf
+
+    a.) How much memory is reported being used in the summary:  ___~200__GB (on Vista)
+
+    b.) cat the memory_stats file and report the behavior.
+
+        cat remora_*[0-9][0-9]/MEMORY/memory_stats_*.txt
+
+           What is the behavior of VIRT memory (constant or growing): __________no
+           What is the behavior of RES  memory (constant or growing): __________yes
+
+    c.) Discover the above information in the remora timeline memory plot:
+        cat the html file and paste it to a file named mem_fortran.html on your machine.
+        Or simply scp (copy) it to your machine if you know how.
+
+        cat remora_*[0-9][0-9]/MEMORY/memory_*.html
+              #copy and paste into file on your laptop. (call it mem_f90.html)
+
+       ON LOCAL machine:
+
+         ON MACS:       open io_f90.html
+         ON LINUX:   firefox io_f90.html
+         ON Windows: <click> io_f90.html
+
+
+3.) run memoryc
+
+       remora ./memoryc
+
+    a.) How much memory is reported being used in the summary:  __~175_GB (on Vista)
+
+    b.) cat memory_stats file and report the behavior.
+
+        cat remora_*[0-9][0-9]/MEMORY/memory_stats_*.txt
+
+           What is the behavior of VIRT memory (constant or growing): __________yes
+           What is the behavior of RES  memory (constant or growing): __________yes
+
+    c.) cat the html file and paste it to a file named mem_c.html on your machine.
+        Or simply scp (copy) it to your machine if you know how.
+
+        cat remora_*[0-9][0-9]/MEMORY/memory_*.html
+              #copy and paste into file on your laptop. (call it mem_c.html)
+    
+       ON LOCAL machine:
+         ON MACS:       open mem_c.html
+         ON LINUX:   firefox mem_c.html
+         ON Windows: <click> mem_c.html
+
+4.)   Download remora_*[0-9][0-9]/NUMA/numa_*.html and view it!
+      Look at the two bottom plots to see memory growth on the
+      local memory of each socket (of each NUMA Node).
+

@@ -1,0 +1,66 @@
+                                             Kent Milfeld 2026 04 17
+LOAD Exercise:
+
+The C loadc.c code requests 16 threads, and iterates over a loop
+that executes a load on the first set of 8 threads on EVEN 
+iterations and the other set (last 8) on ODD iterations.
+
+It is interesting to see a timeline of the load in a remora plot
+and determine which threads are being used, and how much of a load
+is being created by the other threads waiting at the barrier
+(on each iteration in the parallel region).
+
+In the remora_#####/CPU directory there are cpu_<nodeid>.* load files.
+
+
+============================================================================
+
+
+0.) Make sure you are in an interactive IDEV session, 
+    then cd to the memory dir.
+
+    If not, start a session:
+
+       idev  # with appropriate reservation and account
+       cd remora/load
+
+       module load remora
+       export REMORA_PERIOD=1   # *******
+
+1.) Look over loadc.c, and the make the loadc executable.
+
+       make
+
+2.) Make sure the program runs:
+
+       ./loadc
+
+3.) Now run it with remora
+
+       remora ./load
+
+    a.) Which directory and files have the load information   (__________)  
+
+        Copy (use scp) the cpu_<node>.html to your machine.
+     or
+        cat the file, select the output and paste it into load.html
+        on your laptop.
+           To open the single load.html file ON YOUR LOCAL machine:
+
+            ON MACS:       open load.html
+            ON LINUX:      open load.html  or firefox load.html
+            ON Windows:    open load.html  or <click> on load.html
+
+    b.) Validate that different cores are being used for each set
+        of threads. (On a line hover over a data point dot.)
+        Are they a sequential set  (-----------yes/no)
+ 
+    c.) How much of a load are the "idle" threads actually put
+        on the cores they are "idling" on?  (______%).
+        Hint: note where the 100% load theads settle down to
+        when the other set is running at 100% -- they don't settle
+        down to 0%.
+
+    d.) What is the average load on the system for this run? (___%)
+        Hint: note the flat line near the bottom labeled "avg".
+

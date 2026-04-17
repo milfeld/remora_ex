@@ -1,0 +1,33 @@
+
+3.) Now run it with remora
+
+       remora ./load
+
+    a.) Which directory and files have the load information   
+
+(_____remora_######/CPU, files: cpu_<nodeid>.html and cpu_<nodeid>.txt)  
+
+        Copy (use scp) the cpu_<node>.html to your machine.
+     or
+        cat the file, select the output and paste it into load.html
+        on your laptop.
+           To open the single load.html file ON YOUR LOCAL machine:
+
+            ON MACS:       open load.html
+            ON LINUX:      open load.html  or firefox load.html
+            ON Windows:    open load.html  or <click> on load.html
+
+    b.) Validate that different cores are being used for each set
+        of threads.  (On a line hover over a data point dot.)
+        Are they a sequential set  (------yes)
+ 
+    c.) How much of a load are the "idle" threads actually put 
+        on the cores they are "idling" on?  (_____~65%).
+        Hint: note where the 100% load theads settle down to
+        when the other set is running at 100% -- they don't settle
+        down to 0%. 
+
+
+    d.) What is the average load on the system for this run? (___~20%)
+        Hint: note the flat line near the bottom labeled "avg".
+

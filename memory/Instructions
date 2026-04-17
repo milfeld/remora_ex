@@ -1,0 +1,108 @@
+                                             Kent Milfeld 2026 04 17
+Memory Exercise:
+
+On some HPC systems an application will be killed if it exceeds a
+virtual memory limit (VIRT memory), and on others only when physical
+memory (RES memory) is exceded.
+
+Some programs allocate all their required memory at the beginning,
+others do it piecemeal throughout the program. Allocated memory, immediately
+appears as Virtual memory (even though it may not be used). Hence, for the 
+former (non-piecemeal) a very large virtual memory will initially appear, 
+and stay constant; for the latter the virtual memory increases throught the program.  
+
+The resident memory is the "physical memory" used.  It is the part of
+the allocated memory that is written to (for the first time) and
+now has to exist in real memory.  If the allocated (virtual) is 
+always initialized immediately, the the virtual and physical memory
+change together.  Any allocated storage that is never initialized 
+(used) remains virtual memory.
+
+Optional: Review in memoryc.c or mymoryf.F90 how the memory is allocated 
+          and initialize throughout the program.
+
+After executioning a C code and a Fortran code with remora, 
+see if the maximum virtual and resident memory are the same 
+in the summary, and then evaluate how they changed throughout the run.
+(They were written to differ.)
+
+  You will build C and F90 memory allocator executables. (memoryc and memoryf)
+  You will "attach" remora and acquire some details about the execution.
+
+===============================================================================
+
+
+0.) MAKE SURE YOU ARE IN AN INTERACTIVE IDEV SESSION, then cd to the memory dir.
+
+    Start a session (at TACC):
+
+       idev            #wait for prompt, accept reservation and all defaults
+       cd remora/memory
+
+       module load remora
+       export REMORA_PERIOD=1
+
+1.) Build memory programs
+
+       make      #checkout the makefile, how it sets macros for different sites.
+
+2.) Make sure the program run:
+
+     ./memoryc
+     ./memoryf
+
+3.) run memoryf with a period of 1 second
+
+       remora ./memoryf
+
+    a.) How much memory is reported being used in the summary:  _____GB
+
+    b.) cat the memory_stats file and report the behavior.
+
+        cat remora_*[0-9][0-9]/MEMORY/memory_stats_*.txt
+
+           What is the behavior of VIRT memory (constant or growing): __________
+           What is the behavior of RES  memory (constant or growing): __________
+
+    c.) Discover the above information in the remora timeline memory plot:
+        cat the html file and paste it to a file named mem_fortran.html on your machine.
+        Or simply scp (copy) it to your machine if you know how.
+
+        cat remora_*[0-9][0-9]/MEMORY/memory_*.html
+              #copy and paste into file on your laptop. (call it mem_f90.html)
+
+       ON LOCAL machine:
+
+         ON MACS:       open io_f90.html
+         ON LINUX:   firefox io_f90.html
+         ON Windows: <click> io_f90.html
+
+
+3.) run memoryc
+
+       remora ./memoryc
+
+    a.) How much memory is reported being used in the summary:  _____GB
+
+    b.) cat memory_stats file and report the behavior.
+
+        cat remora_*[0-9][0-9]/MEMORY/memory_stats_*.txt
+
+           What is the behavior of VIRT memory (constant or growing): __________
+           What is the behavior of RES  memory (constant or growing): __________
+
+    c.) cat the html file and paste it to a file named mem_c.html on your machine.
+        Or simply scp (copy) it to your machine if you know how.
+
+        cat remora_*[0-9][0-9]/MEMORY/memory_*.html
+              #copy and paste into file on your laptop. (call it mem_c.html)
+    
+       ON LOCAL machine:
+         ON MACS:       open mem_c.html
+         ON LINUX:   firefox mem_c.html
+         ON Windows: <click> mem_c.html
+
+4.)   Download remora_*[0-9][0-9]/NUMA/numa_*.html and view it!
+      Look at the two bottom plots to see memory growth on the
+      local memory of each socket (of each NUMA Node).
+

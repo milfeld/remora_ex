@@ -1,0 +1,22 @@
+
+3.) run bla with a period of 1 second, and view/open the remora-*/GPU/gpu*html file
+    on your laptop.
+
+       remora ./bla
+
+
+        cat remora_*[0-9][0-9]/gpu/gpu_*.html
+              #copy and paste into file on your laptop. (call it gpu.html)
+
+       ON LOCAL machine:
+
+         ON MACS:       open gpu.html
+         ON LINUX:   firefox gpu.html
+         ON Windows: <click> gpu.html
+
+    a.) What executions unit are being used (fp64, fp32, ...)? ______fp32 ______fp64 ____integer
+    b.) Is memory usage ever being maxed out?
+    c.) The four kernel performance measurements are (in order): yes
+        saxpy, daxpy, daspy_sqrt, and dsincos.  Which one uses the
+        most energy?  ______________saxpy, daxpy, daspy_sqrt, and dsincos
+

@@ -1,0 +1,23 @@
+The remora example/exercise files are in
+~train00/remora_ex.tar (at TACC) or available at github.
+
+Instructions:
+
+
+    git clone https://github.com/milfeld/remora_ex
+
+    tar -xvf ~train00/remora_ex.tar  # on TACC machines
+
+    cd remora_ex
+    
+
+General Instructions:
+Read "Instructions" file in each directory.
+Do experiments in this order:
+
+         load
+         mpi
+         memory
+         gpu  # GPU required, or course
+         io   # does not work on TACC systems
+              #    -- due to security restrictions

@@ -1,0 +1,56 @@
+
+MPI Exercise:
+
+The matmult.f90 code performs a matrix multiply in a crude way,
+using a driver process to send out tasks for worker processes.
+See what you determine about this mpi method (amount of communications
+costs, the most widely mpi functions used, etc.).
+
+    You will build the matmult executable.
+    You will run it without remora, to make sure all is working.
+    You will "attach" remora and acquire some details about the execution.
+
+*******************************************************************************
+
+1.) 
+
+    cd remora/mpi
+ 
+
+2.) Build matmult
+
+    make         #FYI: checkout the makefile, how it sets TACC site flags
+
+3.) Run the execution without remora
+
+    TACC:
+            ibrun -np 8 matmult
+
+
+5.) Now execute again, using a remora capture period of 1 second:
+
+
+    TACC:
+           remora  ibrun -np 8 matmult
+
+
+
+*******************************************************************************
+
+a.) From the Summary, report the total time:          ________(sec)
+
+b.) What percent of the time was consumed for MPI:    ________%
+
+c.) Open the remora_<jobid>/MPI/impi_data.txt file:
+    Look in the "Callsites:" & "Callsite Message Sent statistics" section.
+
+    What are the top 3 MPI consumers of time          ______, ______, ______
+
+    Which MPI function was called the most # of times:   _________
+
+d.) You can get a bar graph from 
+    remora_<jobid>/MPI/*_breakdown.html
+
+    cat the file, select the content, and paste it into mpi.html (file) on your laptop.
+    Open mpi.html in your laptop browser, Voila. 
+    ("open mpi.html" in a terminal window.)

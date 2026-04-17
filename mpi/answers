@@ -1,0 +1,12 @@
+*******************************************************************************
+
+a.) From the Summary, report the total time:            -- ~2s
+
+b.) What percent of the time was consumed for MPI:      -- ~25%
+
+c.) Open the remora_<jobid>/MPI/*_data.txt file:
+    Look in the "Callsites:" & "Callsite Message Sent statistics" section.
+
+    What are the top 3 MPI consumers of time            -- Recv, Bcast, Send
+
+    Which MPI function was called the most # of times:  -- Bcast

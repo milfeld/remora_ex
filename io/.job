@@ -1,0 +1,43 @@
+#!/bin/bash
+#                                        Kent Milfeld 2018 04 24
+# TACC stampede
+#SBATCH -J pio_remora     # Job name
+#SBATCH -o pio_remora.o%j # Name of stdout output file (%j expands to jobId)
+#SBATCH -p skx-dev        # Queue name
+#SBATCH -N 1           # Total number of mpi tasks requested
+#SBATCH -n 16          # Total number of mpi tasks requested
+#SBATCH -t 00:15:00    # Run time (hh:mm:ss) - 5 minutes
+####### -A TACC-PCSE   # <-- Allocation name to charge job against
+
+my_hostname=$(hostname -A)
+if [[ ${my_hostname[@]} =~ stampede2 ]] || [[ ${my_hostname[@]} =~ frontera ]] ; then
+   FILE_SYSTEM=$SCRATCH
+   MPI_RUN=ibrun
+fi
+
+[[ ${my_hostname[@]} =~ frontera ]] && module load intel/19.1.1
+module load remora
+export REMORA_PERIOD=1
+
+   APP_DIR=`pwd`
+
+   stripe=4; tasks=2                    #use 4-wide stripe, and 2 MPI Tasks
+   export     LUSTRE_DIR=$FILE_SYSTEM/pio_test/$stripe
+   rm    -rf $LUSTRE_DIR    #completely remove old directory, if it exists
+   mkdir -p  $LUSTRE_DIR 
+
+   #Set stripe on file system
+                  # Size     stripe Count   Directory
+   lfs setstripe -S 1048576  -c $stripe     $LUSTRE_DIR
+
+   cp $APP_DIR/pio  $LUSTRE_DIR
+
+   cd $LUSTRE_DIR
+
+#echo remora $MPI_RUN -np $tasks  $APP_DIR/pio
+#     remora $MPI_RUN -np $tasks  $APP_DIR/pio
+
+ echo remora $MPI_RUN -np $tasks  ./pio
+date
+      remora $MPI_RUN -np $tasks  ./pio
+date

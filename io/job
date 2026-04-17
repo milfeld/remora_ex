@@ -1,0 +1,67 @@
+#!/bin/bash
+#                                        Kent Milfeld 2018 04 24
+# TACC stampede
+#SBATCH -J pio_remora     # Job name
+#SBATCH -o pio_remora.o%j # Name of stdout output file (%j expands to jobId)
+#SBATCH -p skx-dev        # Queue name
+#SBATCH -N 1           # Total number of mpi tasks requested
+#SBATCH -n 2           # Total number of mpi tasks requested
+#SBATCH -t 00:15:00    # Run time (hh:mm:ss) - 5 minutes
+####### -A TACC-PCSE   # <-- Allocation name to charge job against
+
+   MPI_RUN=mpirun
+   FILE_SYSTEM=$HOME
+
+my_hostname=$(hostname -A)
+if [[ ${my_hostname[@]} =~ vista    ]] || 
+   [[ ${my_hostname[@]} =~ stampede ]] ||
+   [[ ${my_hostname[@]} =~ lonestar ]] ; then
+   FILE_SYSTEM=$SCRATCH
+   MPI_RUN=ibrun
+fi
+
+module load remora
+export REMORA_PERIOD=1
+
+   APP_DIR=`pwd`
+
+   stripe=4; tasks=2                    #use 4-wide stripe, and 2 MPI Tasks
+   export     PFS_DIR=$FILE_SYSTEM/pio_test/$stripe
+   rm    -rf $PFS_DIR    #completely remove old directory, if it exists
+   mkdir -p  $PFS_DIR 
+
+   if [[ ${my_hostname[@]} =~ stampede ]] ||
+      [[ ${my_hostname[@]} =~ lonestar ]] ; then
+
+      echo " Setup striping for Luster."
+                     # Size     stripe Count   Directory
+      lfs setstripe -S 1048576  -c $stripe     $PFS_DIR
+   fi
+
+   if [[ ${my_hostname[@]} =~ vista    ]] || 
+      echo " Setup for VAST needed here."
+   fi
+
+   cp $APP_DIR/pio  $PFS_DIR
+
+   cd $PFS_DIR
+
+ echo remora $MPI_RUN -np $tasks  ./pio
+ date
+      remora $MPI_RUN -np $tasks  ./pio
+ date
+
+# Now move report directory back to app directory.
+report_dir=$( ls -d remora_* )
+
+if [[ -d $APP_DIR/$report_dir ]]; then  # if a reported dir already exists find next no 
+   cd    $APP_DIR
+   no=$( eval ls -d ${report_dir}* | sed s/$report_dir// |sort -n | head -1 )
+   [[ $no == "" ]] && next_number=1 || next_number=$(( -$no + 1 ))
+   cd $PFS_DIR
+   mv $APP_DIR/${report_dir} $APP_DIR/${report_dir}-$next_number
+   cp -rp  $report_dir $APP_DIR
+else
+   cp -rp  $report_dir $APP_DIR
+fi
+
