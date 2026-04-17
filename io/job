@@ -38,7 +38,7 @@ export REMORA_PERIOD=1
       lfs setstripe -S 1048576  -c $stripe     $PFS_DIR
    fi
 
-   if [[ ${my_hostname[@]} =~ vista    ]] || 
+   if [[ ${my_hostname[@]} =~ vista    ]]; then
       echo " Setup for VAST needed here."
    fi
 
