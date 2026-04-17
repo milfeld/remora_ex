@@ -1,18 +1,13 @@
 #                         MPI  Kent Milfeld 2017 11 15
 F90    = ifort
 FFLAGS = -O3
+
 CC     = icc
-CFLAGS = -O3 -xHOST 
+CFLAGS = -O3
 
-ifneq ($(findstring lengau,$(shell hostname -A)),)
-        F90=gfortran -fopenmp
-        FFLAGS=-O3
-        CC=gcc
-        CFLAGS=-O3
-        OMPFLAG=-fopenmp
-endif
+HOSTNAME := $(shell hostname --long)
 
-ifneq ($(findstring frontera,$(shell hostname -A)),)
+ifeq ($(findstring lonestar,$(HOSTNAME)),lonestar)
         F90=ifort -fopenmp
         FFLAGS=-O3 $(TACC_VEC_FLAGS)
 #       CC=icpc
@@ -20,15 +15,16 @@ ifneq ($(findstring frontera,$(shell hostname -A)),)
         CFLAGS=-O3 $(TACC_VEC_FLAGS)
         OMPFLAG=-fopenmp
 endif
-ifneq ($(findstring stampede,$(shell hostname -A)),)
-        F90=ifort -fopenmp
+
+ifeq ($(findstring stampede,$(HOSTNAME)),stampede)
+        F90=ifx
         FFLAGS=-O3 $(TACC_VEC_FLAGS)
-        CC=icpc
+        CC=icx
         CFLAGS=-O3 $(TACC_VEC_FLAGS)
-        OMPFLAG=-fopenmp
+        OMPFLAG=-qopenmp
 endif
 
-ifneq ($(findstring vista,$(shell hostname -A)),)
+ifeq ($(findstring vista,$(HOSTNAME)),vista)
         F90=nvfortran
        #FFLAGS=-O3 $(TACC_VEC_FLAGS)
         FFLAGS=-O3 -Mvect=simd -w

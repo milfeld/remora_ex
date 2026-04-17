@@ -1,30 +1,58 @@
-#                         IO  Kent Milfeld 2017 11 15
-pCC = mpicc
-sCC =   icc
-CFLAGS=-O3
+#                         MPI  Kent Milfeld 2017 11 15
+F90    = ifort
+FFLAGS = -O3
+
+CC     = icc
+CFLAGS = -O3
 
 HOSTNAME := $(shell hostname --long)
 
-pCC=mpicc
-sCC=$(shell mpicc -showme:command | xargs basename)
+ifeq ($(findstring lonestar,$(HOSTNAME)),lonestar)
+        F90=ifort -fopenmp
+        FFLAGS=-O3 $(TACC_VEC_FLAGS)
 
+        CC=icc
+        CFLAGS=-O3 $(TACC_VEC_FLAGS)
 
-ifeq ($(findstring vista,$(HOSTNAME)),vista)
-   CFLAGS=-O3 --diag_suppress=set_but_not_used,declared_but_not_referenced
+        OMPFLAG=-fopenmp
 endif
 
-pio: pio.o 
-	$(pCC) pio.o -o pio 
+ifeq ($(findstring stampede,$(HOSTNAME)),stampede)
+        F90=ifx -qopenmp
+        FFLAGS=-O3 $(TACC_VEC_FLAGS)
 
-pio.o: pio.c
-	$(pCC) $(CFLAGS) -c pio.c  -o pio.o
+        CC=icx
+        CFLAGS=-O3 $(TACC_VEC_FLAGS)
 
-io: io.o 
-	$(sCC) io.o -o io 
+        OMPFLAG=-qopenmp
+endif
 
-io.o: io.c
-	$(sCC) $(CFLAGS) -c io.c  -o io.o
+ifeq ($(findstring vista,$(HOSTNAME)),vista)
+        F90=nvfortran
+        FFLAGS=-O3 $(TACC_VEC_FLAGS)
+       #FFLAGS=-O3 -Mvect=simd -w
 
+        CC=nvc
+        CFLAGS=-O3 $(TACC_VEC_FLAGS)
+       #CFLAGS=-O3 -Mvect=simd -w
+
+       #set_but_not_used
+       #declared_but_not_referenced
+
+        OMPFLAG=-fopenmp
+endif
+
+
+all: loadc
+
+loadc: loadc.o utils.o
+	$(CC) $(OMPFLAG) loadc.o utils.o -o loadc 
+
+loadc.o: loadc.c
+	$(CC) $(CFLAGS) $(OMPFLAG) -c loadc.c  -o loadc.o
+
+utils.o: utils.c
+	$(CC) $(CFLAGS) -c utils.c  -o utils.o
 
 clean:
-	rm -rf *.o core pio io
+	rm -rf *.o core loadc
