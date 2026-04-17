@@ -15,7 +15,7 @@ ifeq ($(findstring stampede,$(HOSTNAME)),stampede)
         CFLAGS=-O3 $(TACC_VEC_FLAGS)
 endif
 
-ifeq ($(findstring lonestar,$(HOSTNAME)),lonestar)
+ifeq ($(findstring ls6,$(HOSTNAME)),ls6)
         F90=ifort
         FFLAGS=-O3 $(TACC_VEC_FLAGS)
         CC=icc

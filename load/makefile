@@ -7,7 +7,7 @@ CFLAGS = -O3
 
 HOSTNAME := $(shell hostname --long)
 
-ifeq ($(findstring lonestar,$(HOSTNAME)),lonestar)
+ifeq ($(findstring ls6,$(HOSTNAME)),ls6)
         F90=ifort -fopenmp
         FFLAGS=-O3 $(TACC_VEC_FLAGS)
 #       CC=icpc
