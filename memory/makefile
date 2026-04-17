@@ -16,6 +16,8 @@ ifeq ($(findstring stampede,$(HOSTNAME)),stampede)
 endif
 
 ifeq ($(findstring ls6,$(HOSTNAME)),ls6)
+        $(shell sed -i 's/N3\s*[1-9][0-9]*/N3 200/' memoryc.c)
+        $(shell sed -i 's/N3\s*=\s*[1-9][0-9]*/N3=200/' memoryf.F90)
         F90=ifort
         FFLAGS=-O3 $(TACC_VEC_FLAGS)
         CC=icc
