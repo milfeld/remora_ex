@@ -4,14 +4,18 @@ FFLAGS=-O3
 CC  = icc
 CFLAGS=-O3 -xHOST 
 
-ifneq ($(findstring lengau,$(shell hostname -A)),)
-        F90=gfortran
-        FFLAGS=-O3
-        CC=gcc
-        CFLAGS=-O3
+HOSTNAME := $(shell hostname --long)
+
+ifeq ($(findstring stampede,$(HOSTNAME)),stampede)
+        $(shell sed -i 's/N3\s*[1-9][0-9]*/N3 150/' memoryc.c)
+        $(shell sed -i 's/N3\s*=\s*[1-9][0-9]*/N3=150/' memoryf.F90)
+        F90=ifx
+        FFLAGS=-O3 $(TACC_VEC_FLAGS)
+        CC=icx
+        CFLAGS=-O3 $(TACC_VEC_FLAGS)
 endif
 
-ifneq ($(findstring stampede,$(shell hostname -A)),)
+ifeq ($(findstring lonestar,$(HOSTNAME)),lonestar)
         F90=ifort
         FFLAGS=-O3 $(TACC_VEC_FLAGS)
         CC=icc
@@ -21,7 +25,7 @@ endif
 
 
 # Frontera, decrease memory slightly
-ifneq ($(findstring frontera,$(shell hostname -A)),)
+ifeq ($(findstring frontera,$(HOSTNAME)),frontera)
         $(shell sed -i 's/N3\s*[1-9][0-9]*/N3 120/' memoryc.c)
         $(shell sed -i 's/N3\s*=\s*[1-9][0-9]*/N3=120/' memoryf.F90)
         F90=ifort
@@ -30,7 +34,7 @@ ifneq ($(findstring frontera,$(shell hostname -A)),)
         CFLAGS=-O3 $(TACC_VEC_FLAGS)
 endif
 
-ifneq ($(findstring vista,$(shell hostname -A)),)
+ifeq ($(findstring vista,$(HOSTNAME)),vista)
         $(shell sed -i 's/N3\s*[1-9][0-9]*/N3 200/' memoryc.c)
         $(shell sed -i 's/N3\s*=\s*[1-9][0-9]*/N3=200/' memoryf.F90)
         F90=nvfortran
@@ -59,4 +63,3 @@ memoryc.o: memoryc.c
 
 clean:
 	rm -rf *.o core memoryf memoryc *.mod
-
